@@ -8,6 +8,8 @@
 #define PIN_GREEN 12
 #define PIN_BLUE 13
 
+#define FADE_PERIOD 3.0f
+
 void Led_setup();
 void Led_loop();
 

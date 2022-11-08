@@ -6,7 +6,6 @@ CRGB led;
 CRGB source;
 CRGB target;
 
-#define FADE_PERIOD 3.0f
 
 int fadeStart = 0;
 
