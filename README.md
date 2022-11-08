@@ -1,3 +1,5 @@
+# Kid alarm light
+
 ## Intro
 
 This is a project to replace my current (broken) [sleeping trainer](https://www.bol.com/nl/nl/p/sleepyy-slaaptrainer-voor-kinderen-kinderwekker-met-nachtlamp-en-wekker-wit-konijn/9300000088630304/).
@@ -7,6 +9,9 @@ This is a project to replace my current (broken) [sleeping trainer](https://www.
 - [x] Drive an RGB led based on a schedule
 - [x] Get the time from a Wifi connection
 - [x] Fluent color easing
+- [x] LDR support to adjust the brightness to ambient lighting
+- [ ] Put debug statements behind a flag
+- [ ] Remote syslog support?
 - [ ] Publish MQTT events
 - [ ] Have the schedule be persistent
 - [ ] Use LittleFS instead of SPIFFS
