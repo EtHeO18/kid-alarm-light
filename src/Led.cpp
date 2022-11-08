@@ -20,7 +20,6 @@ void fadeTo(const CRGB & dest){
   snprintf(buffer, sizeof(buffer), "Have a new target: 0x%02X%02X%02X (old color 0x%02X%02X%02X)\n", dest.r, dest.g, dest.b, led.r, led.g, led.b);
   Serial.println(buffer);
   
-  //t:1667815974
   source = led;
   target = dest;
 

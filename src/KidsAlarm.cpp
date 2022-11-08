@@ -23,11 +23,13 @@ void renderTime(){
 
   auto currentEntry = program.currentEntry(weekday(), hour(), minute(), second());
   
-  if(!current){
+  if(!currentEntry){
+    // Serial.println("!currentEntry");
     return;
   }
 
   if(currentEntry == current){
+    // Serial.println("currentEntry == current");
     return;
   }
 
@@ -86,6 +88,14 @@ void loop() {
       Serial.print("Have command name: ");
       Serial.println(name);
       if(name.equals("t")){
+
+
+        //Nov 07 2022 10:12:54
+        //t:1667815974
+
+        //Nov 07 2022 20:11:37
+        //t:1667848297
+
         String timestamp = command.substring(index+1);
         int value = timestamp.toInt();
         setTime(value);
