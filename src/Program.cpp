@@ -1,10 +1,11 @@
 
-#include <SoftwareSerial.h>
-
 #include <ArduinoJson.h>
-#include <FS.h>
+#include <Preferences.h>
 
 #include "Program.hpp"
+#include <Arduino.h>
+
+#include "FS.h"
 
 
 Program::Program(){
@@ -54,26 +55,11 @@ void Program::addNewEntry(uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t
 
 
 void Program::load(){
-  addNewEntry(1, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(1, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(2, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(2, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(3, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(3, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(4, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(4, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(5, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(5, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(6, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(6, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(7, 7, 30, 0, 0xFF, 0x3F, 0x00);
-  addNewEntry(7, 19, 00, 0, 0x00, 0x00, 0xFF);
+  for(int a=1; a<=7; a++){
+    addNewEntry(a, 8, 30, 0, 0x00, 0xFF, 0x00);
+    addNewEntry(a, 21, 00, 0, 0xFF, 0x00, 0x00);
+  }
+  Serial.println("Loaded default program");
   
 }
 

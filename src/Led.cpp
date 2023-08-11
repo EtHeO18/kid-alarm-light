@@ -1,4 +1,3 @@
-
 #include "Led.h"
 
 CRGB led;
@@ -26,11 +25,15 @@ void fadeTo(const CRGB & dest){
   fadeStart = millis();
 }
 
-
 void displayLed(){
   analogWrite(PIN_RED, led.r);
   analogWrite(PIN_GREEN, led.g);
   analogWrite(PIN_BLUE, led.b);
+}
+
+void jumpTo(const CRGB & dest){
+  led = dest;
+  displayLed();
 }
 
 void fadeTask(){

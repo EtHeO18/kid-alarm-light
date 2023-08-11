@@ -1,5 +1,4 @@
-#include <stdint.h> 
-#include  <SoftwareSerial.h>
+#include <Arduino.h>
 
 class ProgramEntry {
   public:

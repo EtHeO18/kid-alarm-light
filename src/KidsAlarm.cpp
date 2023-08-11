@@ -1,19 +1,22 @@
-#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
-
-#include <SoftwareSerial.h>
-
-
-#include "Wifi.h"
 #include "Led.h"
-#include "Time.h"
-#include "OTA.h"
-#include "MQTT.h"
+#include "Time.hpp"
 
-#include "TaskScheduler.h"
+#include <Arduino.h>
 
 #include "Program.hpp"
-Program program;
 
+#define _TASK_SLEEP_ON_IDLE_RUN  // Enable 1 ms SLEEP_IDLE powerdowns between runs if no callback methods were invoked during the pass
+#define _TASK_STATUS_REQUEST     // Compile with support for StatusRequest functionality - triggering tasks on status change events in addition to time only
+
+#include <TaskScheduler.h>
+
+#include "MQTT.h"
+#include "Wifi.h"
+#include "HTTP.hpp"
+
+
+
+Program program;
 
 int prevMinute = -1;
 
@@ -24,14 +27,16 @@ void renderTime(){
   auto currentEntry = program.currentEntry(weekday(), hour(), minute(), second());
   
   if(!currentEntry){
-    // Serial.println("!currentEntry");
+    Serial.println("!currentEntry");
     return;
   }
 
   if(currentEntry == current){
-    // Serial.println("currentEntry == current");
+    Serial.println("currentEntry == current");
     return;
   }
+
+  Serial.println("Have new relevant entry");
 
   current = currentEntry;
 
@@ -47,29 +52,53 @@ void renderTime(){
 
 Scheduler runner;
 
+Task taskTime(5000, TASK_FOREVER, &renderTime);
+Task taskFade(1, TASK_FOREVER, &fadeTask);
+
 
 void setup() {
  
-  new Task(5000 * TASK_MILLISECOND, TASK_FOREVER, &renderTime, &runner, true);
-  new Task(1 * TASK_MILLISECOND, TASK_FOREVER, &fadeTask, &runner, true);
-
-  program.load();
 
   Serial.begin(115200);
 
-  Wifi_setup();
+
+  program.load();
+  
+
+  runner.init();
+  Serial.println("Initialized scheduler");
+
+  runner.addTask(taskTime);
+  runner.addTask(taskFade);
+
+  taskTime.enable();
+  taskFade.enable();
+
+  Serial.println("Scheduled tasks");
+
+
   Led_setup();
+
+  jumpTo(CRGB(0xFF00FF));
+
+  Wifi_setup();
+
+  jumpTo(CRGB(0x00FFFF));
   Time_setup();
-  MQTT_setup();
-  OTA_setup();
+
+  jumpTo(CRGB(0x000000));
+  // MQTT_setup();
+  // OTA_setup();
+  // HTTP_setup();
 
 }
 
 
 void loop() {
   Time_loop();
-  MQTT_loop();
-  OTA_loop();
+  // MQTT_loop();
+  // OTA_loop();
+  // HTTP_loop();
 
   runner.execute();
 

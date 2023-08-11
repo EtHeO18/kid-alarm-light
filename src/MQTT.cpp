@@ -1,5 +1,10 @@
 #include "MQTT.h"
 
+#include <PubSubClient.h>
+
+
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
 
 
 WiFiClient espClient;
@@ -43,10 +48,10 @@ void MQTT_publish(const char * topic, const char * msg){
   client.publish(topic, msg);
 }
 
-void (*pCallback)(byte *, unsigned int) = NULL;
+void (*pCallback)(uint8_t *, unsigned int) = NULL;
 
 
-void MQTT_subscribe(char * topic, void (*callback)(byte *, unsigned int)){
+void MQTT_subscribe(char * topic, void (*callback)(uint8_t *, unsigned int)){
   Serial.println("MQTT_subscribe");
   
   Serial.printf("Topic: [%s]\n", topic);
@@ -60,7 +65,7 @@ void MQTT_subscribe(char * topic, void (*callback)(byte *, unsigned int)){
 
 
 
-void MQTT_callback(char* topic, byte * payload, unsigned int length){
+void MQTT_callback(char* topic, uint8_t * payload, unsigned int length){
 
   Serial.println("MQTT_callback");
   

@@ -1,4 +1,11 @@
-#include "Time.h"
+
+#include <TimeLib.h>
+
+#include <NTPClient.h>
+#include <Timezone.h>
+
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
 
 WiFiUDP ntpUdpClient;
 
@@ -18,13 +25,17 @@ void Time_loop(){
 
 
 time_t syncProvider(){
-  
+
+
+
   Serial.println("Getting a new time");
   Time_loop();
   
   time_t utc = timeClient.getEpochTime();
+  setTime(utc);
   time_t local = CE.toLocal(utc);
-//  Serial.printf("utc: %d, local: %d\n", utc, local);
+
+  Serial.printf("local: %d/%d/%d %d:%d:%d\n", day(local), month(local), year(local), hour(local), minute(local), second(local));
 
   return local;
 }
@@ -39,7 +50,7 @@ void Time_setup(){
   
   setSyncProvider(syncProvider);
   //Set Sync Intervals
-  setSyncInterval(300);
+  setSyncInterval(30);
 
   Time_loop();
 }

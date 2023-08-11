@@ -1,17 +1,15 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-
 
 #include "settings.h"
 
+#include "Arduino.h"
 
-
+using namespace std;
 
 
 
 struct SubscribedChannel {
   String * topic;
-  void (*callback)(byte *, unsigned int);
+  void (*callback)(uint8_t *, unsigned int);
 };
 
 
