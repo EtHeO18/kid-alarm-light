@@ -49,11 +49,16 @@ void renderTime(){
 
 }
 
+void feedWatchdog(){
+  ESP.wdtFeed();
+}
+
 
 Scheduler runner;
 
 Task taskTime(5000, TASK_FOREVER, &renderTime);
 Task taskFade(1, TASK_FOREVER, &fadeTask);
+// Task taskFeedWatchdog(1000, TASK_FOREVER, &feedWatchdog);
 
 
 void setup() {
@@ -70,9 +75,11 @@ void setup() {
 
   runner.addTask(taskTime);
   runner.addTask(taskFade);
+  // runner.addTask(taskFeedWatchdog);
 
   taskTime.enable();
   taskFade.enable();
+  // taskFeedWatchdog.enable();
 
   Serial.println("Scheduled tasks");
 
@@ -91,6 +98,7 @@ void setup() {
   // OTA_setup();
   // HTTP_setup();
 
+  ESP.wdtEnable(10000);
 }
 
 
