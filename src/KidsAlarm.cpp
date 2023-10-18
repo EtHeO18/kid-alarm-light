@@ -154,6 +154,8 @@ void loop() {
         target.b = (value >>  0) & 0xFF;
 
         fadeTo(target);
+      }else if(name.equals("s")){
+        program.save();
       }
     }
 
