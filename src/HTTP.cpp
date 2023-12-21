@@ -2,14 +2,27 @@
 
 #include <ESP8266WebServer.h>
 
+#include "FS.h"
+#include <LittleFS.h>
+
+
+#include <Program.hpp>
+
 ESP8266WebServer server(80);
+
+Program* _program;
 
 /* Just a little test message.  Go to http://192.168.4.1 in a web browser
    connected to this access point to see it.
 */
 void handleRoot() {
   Serial.println("Serving root");
-  server.send(200, "text/html", "<h1>You are connected</h1><form method='post' action='/settime'><input type=text id=timestamp name=timestamp /></form><script>const elm = document.querySelector('#timestamp').value=Math.floor(Date.now() / 1000); document.querySelector('form').submit();</script>");
+  auto fh = LittleFS.open("public/index.html", "r");
+  if(!fh){
+    server.send(404, "text/html", "File not found!");
+    return;
+  }
+  server.send(200, "text/html", fh.readString());
 }
 
 void handleSetTime(){
@@ -26,7 +39,22 @@ void handleSetTime(){
       Serial.println(message);
 }
 
-void HTTP_setup(){
+
+void handleSaveProgram(){
+    if (!server.hasArg("plain")){
+      server.send(400, "text/plain", "Program missing");
+      return;
+    }
+
+    auto json = server.arg("plain");
+    _program->load(json);
+    
+    server.send(200, "text/plain", "");
+}
+
+void HTTP_setup(Program* program){
+
+  _program = program;
 
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
@@ -34,6 +62,7 @@ void HTTP_setup(){
   server.on("/", handleRoot);
 
   server.on("/settime", handleSetTime);
+  server.on("/program", HTTP_POST, handleSaveProgram);
   server.begin();
   Serial.println("HTTP server started");
 }

@@ -6,6 +6,7 @@
 #include <Arduino.h>
 
 #include "FS.h"
+#include <LittleFS.h>
 
 
 Program::Program(){
@@ -26,7 +27,7 @@ ProgramEntry* Program::currentEntry(uint8_t weekday, uint8_t hour, uint8_t minut
   // current.print();
   // Serial.println();
 
-  for (int i = 0; i < program.size(); i++) {
+  for (size_t i = 0; i < program.size(); i++) {
     // Serial.print("currentEntry() considering ");
     // program[i]->print();
 
@@ -52,29 +53,66 @@ void Program::addNewEntry(uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t
   program.push_back(entry);
 }
 
+#define PROGRAM_CONFIG_PATH "/config/program.json"
 
+void Program::load(String programJson){
+  
+  DynamicJsonDocument json(1024*10);
+
+  auto error = deserializeJson(json, programJson);
+  if(error == error.Ok){
+    Serial.println("Read this program:");
+    serializeJson(json, Serial);
+    Serial.println();
+  }else if(error == error.EmptyInput){
+    Serial.println("Empty input");
+  }else if(error == error.IncompleteInput){
+    Serial.println("Incomplete input");
+  }else if(error == error.InvalidInput){
+    Serial.println("Invalid input");
+  }else if(error == error.NoMemory){
+    Serial.println("No Memory");
+  }else if(error == error.TooDeep){
+    Serial.println("Too deep");
+  }
+
+
+  Serial.print("It has ");
+  Serial.print(json.size());
+  Serial.println(" entries.");
+
+  program.clear();
+
+  for(size_t i = 0; i < json.size(); i++){
+    auto jsonEntry = json[i];
+
+    addNewEntry(
+      jsonEntry["weekday"],
+      jsonEntry["hour"],
+      jsonEntry["minute"],
+      jsonEntry["second"],
+    
+      jsonEntry["r"],
+      jsonEntry["g"],
+      jsonEntry["b"]
+    );
+  }
+}
 
 void Program::load(){
-  addNewEntry(1, 7, 30, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(1, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(2, 7, 30, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(2, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(3, 7, 30, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(3, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(4, 7, 30, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(4, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(5, 7, 30, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(5, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(6, 8, 00, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(6, 19, 00, 0, 0x00, 0x00, 0xFF);
-  
-  addNewEntry(7, 8, 00, 0, 0xFF, 0x40, 0x00);
-  addNewEntry(7, 19, 00, 0, 0x00, 0x00, 0xFF);
+
+  File configFile = LittleFS.open(PROGRAM_CONFIG_PATH, "r");
+  if (!configFile) {
+    Serial.println("failed to open program file for reading");
+    return;
+  }
+
+  auto programJson = configFile.readString();
+
+  Serial.println("Read config:");
+  Serial.println(programJson);
+
+  this->load(programJson);
   
 }
 
@@ -89,23 +127,28 @@ void Program::save(){
 
       auto entries = json.to<JsonArray>();
 
-      for (int i = 0; i < program.size(); i++) {
+      for (size_t i = 0; i < program.size(); i++) {
         auto obj = entries.createNestedObject();
         obj["weekday"] = program[i]->weekday;
         obj["hour"] = program[i]->hour;
         obj["minute"] = program[i]->minute;
         obj["second"] = program[i]->second;
+        obj["r"] = program[i]->R;
+        obj["g"] = program[i]->G;
+        obj["b"] = program[i]->B;
       }
   
       json["entries"] = entries;
   
-      File configFile = SPIFFS.open("/program.json", "w");
+      File configFile = LittleFS.open(PROGRAM_CONFIG_PATH, "w+");
       if (!configFile) {
         Serial.println("failed to open program file for writing");
       }
   
   #if defined(ARDUINOJSON_VERSION_MAJOR) && ARDUINOJSON_VERSION_MAJOR >= 6
+      Serial.println("Saving program:");
       serializeJson(json, Serial);
+      Serial.println();
       serializeJson(json, configFile);
   #else
       json.printTo(Serial);

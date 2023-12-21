@@ -14,9 +14,11 @@
 #include "Wifi.h"
 #include "HTTP.hpp"
 
+#include "FS.h"
+#include <LittleFS.h>
 
 
-Program program;
+Program* program = new Program();
 
 int prevMinute = -1;
 
@@ -24,7 +26,7 @@ ProgramEntry* current = NULL;
 
 void renderTime(){
 
-  auto currentEntry = program.currentEntry(weekday(), hour(), minute(), second());
+  auto currentEntry = program->currentEntry(weekday(), hour(), minute(), second());
   
   if(!currentEntry){
     Serial.println("!currentEntry");
@@ -66,8 +68,14 @@ void setup() {
 
   Serial.begin(115200);
 
+  delay(500);
 
-  program.load();
+  if(!LittleFS.begin()){
+      Serial.println("LittleFS Mount Failed");
+      return;
+  }
+
+  program->load();
   
 
   runner.init();
@@ -96,7 +104,7 @@ void setup() {
   jumpTo(CRGB(0x000000));
   // MQTT_setup();
   // OTA_setup();
-  // HTTP_setup();
+  HTTP_setup(program);
 
   ESP.wdtEnable(10000);
 }
@@ -106,7 +114,7 @@ void loop() {
   Time_loop();
   // MQTT_loop();
   // OTA_loop();
-  // HTTP_loop();
+  HTTP_loop();
 
   runner.execute();
 
@@ -155,7 +163,7 @@ void loop() {
 
         fadeTo(target);
       }else if(name.equals("s")){
-        program.save();
+        program->save();
       }
     }
 
