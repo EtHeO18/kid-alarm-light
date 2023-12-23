@@ -10,3 +10,7 @@
 .vscode/ipch
 
 src/WifiSettings.h
+
+vue/node_modules
+vue/.vite
+data/public

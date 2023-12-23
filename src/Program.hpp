@@ -5,6 +5,9 @@
 #include "ProgramEntry.hpp"
 #include <TimeLib.h>
 
+
+#define PROGRAM_CONFIG_PATH "/config/program.json"
+
 class Program {
     private:
 

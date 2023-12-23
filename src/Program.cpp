@@ -53,7 +53,6 @@ void Program::addNewEntry(uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t
   program.push_back(entry);
 }
 
-#define PROGRAM_CONFIG_PATH "/config/program.json"
 
 void Program::load(String programJson){
   
