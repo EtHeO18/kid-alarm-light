@@ -87,6 +87,7 @@ void handleSaveProgram(){
 
     auto json = server.arg("plain");
     _program->load(json);
+    _program->save();
     
     server.send(200, "text/plain", "");
 }

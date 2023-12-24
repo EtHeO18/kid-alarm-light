@@ -95,6 +95,8 @@ void Program::load(String programJson){
       jsonEntry["g"],
       jsonEntry["b"]
     );
+    Serial.print("added entry, program size: ");
+    Serial.println(program.size());
   }
 }
 
@@ -118,7 +120,7 @@ void Program::load(){
 void Program::save(){
   Serial.println("Saving program");
   #if defined(ARDUINOJSON_VERSION_MAJOR) && ARDUINOJSON_VERSION_MAJOR >= 6
-      DynamicJsonDocument json(1024);
+      DynamicJsonDocument json(4096);
   #else
       DynamicJsonBuffer jsonBuffer;
       JsonObject& json = jsonBuffer.createObject();
@@ -139,7 +141,7 @@ void Program::save(){
   
       json["entries"] = entries;
   
-      File configFile = LittleFS.open(PROGRAM_CONFIG_PATH, "w+");
+      File configFile = LittleFS.open(PROGRAM_CONFIG_PATH, "w");
       if (!configFile) {
         Serial.println("failed to open program file for writing");
       }
@@ -148,7 +150,10 @@ void Program::save(){
       Serial.println("Saving program:");
       serializeJson(json, Serial);
       Serial.println();
-      serializeJson(json, configFile);
+      auto written = serializeJson(json, configFile);
+      Serial.print("Written ");
+      Serial.print(written);
+      Serial.println(" bytes");
   #else
       json.printTo(Serial);
       json.printTo(configFile);

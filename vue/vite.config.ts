@@ -16,5 +16,12 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: '../data/public'
-  }
+  },
+    server: {
+
+        proxy: {
+            '/program': 'http://10.206.53.20',
+        }
+    }
+
 })
