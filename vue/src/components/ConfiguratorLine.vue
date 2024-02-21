@@ -73,9 +73,9 @@ const color = computed({
 </script>
 
 <template>
-    <li v-if="modelValue">
-			<fieldset>
-				<select v-model="modelValue.weekday">
+    <li v-if="modelValue" class="row">
+			<fieldset class="col">
+				<select v-model="modelValue.weekday" class="form-select">
 					<option
 							v-for="(day,index) in daysOfWeek"
 							:value="index"
@@ -85,18 +85,22 @@ const color = computed({
 				</select>
 			</fieldset>
 
-			<fieldset>
-				<input type="time" v-model="time" step="1"/>
+			<fieldset class="col">
+				<input type="time" v-model="time" step="1" class="form-control" />
 			</fieldset>
 
-			<fieldset>
-				<input type="color" v-model="color" />
+			<fieldset class="col">
+				<input type="color" v-model="color" class="form-control form-control-color"/>
 			</fieldset>
 
-			<button @click="emit('delete')">X</button>
+      <div class="col">
+        <button @click="emit('delete')" class="btn btn-danger">Delete</button>
+      </div>
 		</li>
 </template>
 
 <style>
-
+  input[type=color] {
+    width: 100%;
+  }
 </style>

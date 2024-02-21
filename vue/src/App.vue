@@ -42,15 +42,9 @@ const save = function(){
     <Configurator v-model="program"/>
 		<div>
 
-			<button @click="save()" class="save">Save program</button>
+			<button @click="save()" class="btn btn-success">Save program</button>
 		</div>
   </main>
 	<p v-else>Something went wrong, try reloading.</p>
 </template>
 
-<style>
-.save {
-	float: right;
-	margin: 1em
-}
-</style>

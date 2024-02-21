@@ -29,18 +29,20 @@ const addNew = function(){
 </script>
 
 <template>
-	<div>
 		<ul>
 			<ConfiguratorLine
 					v-for="(line, index) in lines"
 					v-model="lines[index]"
 					@delete="lines.splice(index, 1)"
 			/>
+      <li class="row">
+        <div class="col-4">
+          <button @click="addNew()" class="btn btn-primary">Add</button>
+        </div>
+
+      </li>
 		</ul>
-	</div>
-	<div>
-		<button @click="addNew()" class="add-new">+</button>
-	</div>
+
 </template>
 
 <style>
@@ -55,7 +57,4 @@ fieldset {
 	display: inline;
 }
 
-.add-new {
-	width: 100%;
-}
 </style>
