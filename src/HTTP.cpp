@@ -25,7 +25,15 @@ const char* mimeType(const char* file){
     return "text/javascript";
   }
 
+  if(ends_with(file, ".js.gz")){
+    return "text/javascript";
+  }
+
   if(ends_with(file, ".css")){
+    return "text/css";
+  }
+
+  if(ends_with(file, ".css.gz")){
     return "text/css";
   }
 
@@ -45,6 +53,10 @@ void serveFile(const char* file){
     return;
   }
 
+  if(ends_with(buff, ".gz")){
+    server.sendHeader("Content-Encoding", "gzip");
+  }
+    
   server.send(200, mimeType(buff), fh);
 }
 

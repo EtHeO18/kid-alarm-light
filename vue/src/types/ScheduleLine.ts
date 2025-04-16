@@ -1,4 +1,5 @@
 class ScheduleLine {
+    order?: number;
     weekday: number;
     hour: number;
     minute: number;

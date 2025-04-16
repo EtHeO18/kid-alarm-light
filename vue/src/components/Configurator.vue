@@ -1,18 +1,33 @@
 <script setup lang="ts">
-import {type Ref, toRef, watch} from 'vue';
+import {computed, type Ref, toRef, watch} from 'vue';
 import ConfiguratorLine from "@/components/ConfiguratorLine.vue";
+import draggable from 'vuedraggable'
+
 
 const props = defineProps(['modelValue']);
-
+const emit = defineEmits(['update:modelValue']);
 
 
 const lines = toRef(props, "modelValue") as Ref<Array<ScheduleLine>>;
 
-const emits = defineEmits(['update:modelValue']);
+	const sortableLines = computed({
+		
+		get() {
+			return lines.value
+		},
 
-watch(lines, () => {
-	emits("update:modelValue", lines.value);
-})
+		set(value){
+			console.log('sortableLines.set', value)
+			emit('update:modelValue', value);
+		}
+		
+	});
+
+// const emits = defineEmits(['update:modelValue']);
+
+// watch(lines, () => {
+// 	emits("update:modelValue", lines.value);
+// })
 
 const addNew = function(){
 	lines.value.push({
@@ -26,23 +41,31 @@ const addNew = function(){
 	} as ScheduleLine);
 }
 
+//not necessary?!
+const update = (line: ScheduleLine, newLine: ScheduleLine) => {
+	// console.log({line, newLine})
+}
+
 </script>
 
 <template>
+	<div class="container-sm">
 		<ul>
-			<ConfiguratorLine
-					v-for="(line, index) in lines"
-					v-model="lines[index]"
-					@delete="lines.splice(index, 1)"
-			/>
-      <li class="row">
-        <div class="col-4">
-          <button @click="addNew()" class="btn btn-primary">Add</button>
-        </div>
-
-      </li>
+			<draggable v-model="sortableLines" item-key="id">
+				<template #item="{element: line}">
+					<ConfiguratorLine
+					:line="line"
+					@update="update"
+					@delete="lines.splice(lines.indexOf(line), 1)"
+				/>
+				</template>
+			</draggable>
+			
 		</ul>
-
+	</div>
+	<div>
+		<button @click="addNew()" class="btn btn-secondary add-new">+</button>
+	</div>
 </template>
 
 <style>

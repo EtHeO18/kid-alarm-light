@@ -15,7 +15,7 @@ This is a project to replace my current (broken) [sleeping trainer](https://www.
 - [ ] Publish MQTT events
 - [x] Have the schedule be persistent
 - [x] Use LittleFS instead of SPIFFS
-- [ ] Web interface to edit the schedule
+- [x] Web interface to edit the schedule
 - [ ] MQTT interface to edit the schedule
 - [ ] Adjustable timezone (currently hardcoded in src/Time.cpp)
 - [ ] Daylight saving time easing
@@ -29,4 +29,4 @@ The project is built for an [esp8266-based board](https://nl.aliexpress.com/item
 
 This is built in PlatformIO on VS Code. I have little experience with this, but to my understanding you should just be able to build it.
 
-The frontend part is build with vite, with node v18.17.0. Check the README.md from /vue. After building, be sure to use the "Upload Filesystem Image" from PlatformIO.
+The frontend part is build with vite, with node v18.17.0. Check the README.md from /vue. After building, be sure to use the "Upload Filesystem Image" from PlatformIO. Also, add .gz to the asset urls, I haven't found a way to have vite do that.

@@ -23,26 +23,27 @@ ProgramEntry* Program::currentEntry(uint8_t weekday, uint8_t hour, uint8_t minut
 
   ProgramEntry* valid = program[program.size() - 1];
   
-  // Serial.print("currentEntry() current:    ");
-  // current.print();
-  // Serial.println();
+  Serial.print("currentEntry() current:    ");
+  current.print();
+  Serial.println();
 
   for (size_t i = 0; i < program.size(); i++) {
-    // Serial.print("currentEntry() considering ");
-    // program[i]->print();
+    Serial.print("currentEntry() considering ");
+    program[i]->print();
 
     if(*program[i] <= current){
-      // Serial.println(" is not valid");
+      Serial.println(" is not valid");
       break;
     }else{
       valid = program[i];
-      // Serial.println(" is valid");
+      Serial.println(" is valid");
     }
   }
 
   if(valid){
-    // Serial.print("currentEntry() Have result: ");
-    // valid->print();
+    Serial.print("currentEntry() Have result: ");
+    valid->print();
+    Serial.println();
   }
 
   return valid;

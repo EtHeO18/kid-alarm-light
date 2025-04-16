@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import {computed, toRef} from "vue";
+import {computed, toRef, watch} from "vue";
 
-	const props = defineProps(['modelValue'])
-	const modelValue = toRef(props, 'modelValue')
+	const props = defineProps(['line'])
+	const line = toRef(props, 'line')
 
-	const emit =defineEmits(['delete'])
+	const emit = defineEmits(['delete', 'update'])
 
 	const time = computed({
 		get(){
 			const date = new Date();
 
-			const hour = (''+modelValue.value.hour).padStart(2, '0')
-			const minute = (''+modelValue.value.minute).padStart(2, '0')
-			const second = (''+modelValue.value.second).padStart(2, '0')
+			const hour = (''+line.value.hour).padStart(2, '0')
+			const minute = (''+line.value.minute).padStart(2, '0')
+			const second = (''+line.value.second).padStart(2, '0')
 
 			return `${hour}:${minute}:${second}`;
 		},
@@ -20,9 +20,9 @@ import {computed, toRef} from "vue";
 			const parts = val.split(/:/);
 
 			console.log(parts);
-			modelValue.value.hour = parseInt(parts[0]);
-			modelValue.value.minute = parseInt(parts[1]);
-			modelValue.value.second = parseInt(parts[2]);
+			line.value.hour = parseInt(parts[0]);
+			line.value.minute = parseInt(parts[1]);
+			line.value.second = parseInt(parts[2]);
 		}
 	})
 
@@ -42,9 +42,9 @@ function hexToRgb(hex: string) {
 
 const color = computed({
 	get(){
-		const r = parseInt(modelValue.value.r);
-		const g = parseInt(modelValue.value.g);
-		const b = parseInt(modelValue.value.b);
+		const r = parseInt(line.value.r);
+		const g = parseInt(line.value.g);
+		const b = parseInt(line.value.b);
 		return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
 	},
 
@@ -53,9 +53,9 @@ const color = computed({
 		const parsed = hexToRgb(val);
 
 		if(parsed){
-			modelValue.value.r = parsed.r;
-			modelValue.value.g = parsed.g;
-			modelValue.value.b = parsed.b;
+			line.value.r = parsed.r;
+			line.value.g = parsed.g;
+			line.value.b = parsed.b;
 		}
 	}
 })
@@ -70,12 +70,19 @@ const color = computed({
 		'saturday',
 		'sunday',
 	];
+
+	watch(line, () =>{
+		emit('update', line);
+	})
 </script>
 
 <template>
-    <li v-if="modelValue" class="row">
-			<fieldset class="col">
-				<select v-model="modelValue.weekday" class="form-select">
+    <li v-if="line" class="row">
+		<div class="col-1">
+			<img src="../assets/svgviewer-output.svg" width="32" height="32"/>
+		</div>
+			<fieldset class="col-5">
+				<select class="form-select" v-model="line.weekday">
 					<option
 							v-for="(day,index) in daysOfWeek"
 							:value="index"
@@ -85,17 +92,19 @@ const color = computed({
 				</select>
 			</fieldset>
 
-			<fieldset class="col">
-				<input type="time" v-model="time" step="1" class="form-control" />
+
+			<fieldset class="col-3">
+				<input type="time" v-model="time" step="1"/>
 			</fieldset>
 
-			<fieldset class="col">
-				<input type="color" v-model="color" class="form-control form-control-color"/>
+			<fieldset class="col-2">
+				<input type="color" class="form-control form-control-color" v-model="color" />
 			</fieldset>
 
-      <div class="col">
-        <button @click="emit('delete')" class="btn btn-danger">Delete</button>
-      </div>
+			<div class="col-1">
+				<button class="btn btn-danger" @click="emit('delete')">X</button>
+			</div>
+
 		</li>
 </template>
 
