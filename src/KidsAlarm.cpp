@@ -10,6 +10,7 @@
 
 #include <TaskScheduler.h>
 
+#include "OTA.h"
 #include "MQTT.h"
 #include "Wifi.h"
 #include "HTTP.hpp"
@@ -103,7 +104,7 @@ void setup() {
 
   jumpTo(CRGB(0x000000));
   // MQTT_setup();
-  // OTA_setup();
+  OTA_setup();
   HTTP_setup(program);
 
   ESP.wdtEnable(10000);
@@ -113,7 +114,7 @@ void setup() {
 void loop() {
   Time_loop();
   // MQTT_loop();
-  // OTA_loop();
+  OTA_loop();
   HTTP_loop();
 
   runner.execute();
